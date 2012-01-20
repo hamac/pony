@@ -1,5 +1,6 @@
 require 'mail'
 require 'base64'
+require 'zlib'
 
 # = The express way to send email in Ruby
 #
@@ -212,6 +213,17 @@ module Pony
       else
         mail.attachments[name] = body
       end
+    end
+
+    (options[:gzipped_attachments] || []).each do |name, body|
+      gzipped = StringIO.new
+      gz = Zlib::GzipWriter.new(gzipped)
+      gz.write body
+      gz.close
+      mail.attachments["#{name}.gz"] = {
+        :content => Base64.encode64(gzipped.string),
+        :transfer_encoding => :base64
+      }
     end
 
     (options[:headers] ||= {}).each do |key, value|
