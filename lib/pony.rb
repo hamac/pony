@@ -192,7 +192,7 @@ module Pony
 
       # If we're using attachments, the body needs to be a separate part. If not,
                         # we can just set the body directly.
-      if options[:body] && (options[:html_body] || options[:attachments])
+      if options[:body] && (options[:html_body] || options[:attachments] || options[:gzipped_attachments])
         text_part do
           body options[:body]
         end
